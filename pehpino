@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+  require_once("lib/FeatureParser.php");
+  
+  $parser = new FeatureParser("features/albums.feature");
+?>
+
