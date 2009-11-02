@@ -1,7 +1,13 @@
 #!/usr/bin/env php
 <?php
   require_once("lib/FeatureParser.php");
-  
+  require_once("lib/StepExecutor.php");
+
   $parser = new FeatureParser("features/albums.feature");
+  
+  //$execute = StepExecutor::getInstance();
+
+  //print_r($execute->getSteps());
+
 ?>
 

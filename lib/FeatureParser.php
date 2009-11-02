@@ -1,6 +1,8 @@
 <?php
-  
-  class FeatureParser {
+  require_once("lib/StepExecutor.php");
+
+  class FeatureParser 
+  {
     private $_file;
     private $_featurePattern;
 
@@ -19,6 +21,7 @@
 
     public function parse()
     {
+      $executor = StepExecutor::getInstance();
       $matches = array();
       while($line = fgets($this->_file))
       {
@@ -26,8 +29,8 @@
         if(count($matches) > 0)
         {
           $sentenceParts = split(" ", trim($matches[1]));
-          echo $sentenceParts[0];
-          echo "   " .  $matches[count($matches) - 1] . "\n";
+          $executor->call($sentenceParts[0], $matches[count($matches) - 1]);
+
         }
       }
     }
