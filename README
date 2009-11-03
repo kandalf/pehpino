@@ -2,38 +2,67 @@ PeHPino
 =======
 
 PeHPino is intended to be a Cucumber[1] approach for PHP.
-The solution that cucumber provides for Ruby is great, but I didn't like the way it does for PHP, also, It doesn't look good, from my point of view, to test your application relaying on a language other than the one your application is written on. Also, I couldn't find any other nice approach for BDD on PHP, I just saw a few but all were tainted by PHP syntax.
-To be honest, PHP syntax sucks, specially for this kind of descriptive things.
 
-It's going to be testing framework agnostic, so you can write your tests using your favorite framework. This is just a very early version and it's not even complete, it works with some example feature which is harcoded and a few dummy steps definitions, however, the feature definitions are copied exactly as they were on a cucumber working application, so they're valid cucumber features.
+Cucumber is a tool that "lets software development teams describe how
+software should behave in plain text". As it is written in Ruby it's
+integration with PHP is not as tight as it might be, and it is also
+not nice having to learn a different programming language just to
+write your tests. There was also the problem that I have not found any
+other nice approach for Behaviour Driven Development (BDD) on PHP. The
+sum of all this factors[*] gave birth to PeHPino.
 
- The main goal of PeHPino is to provide a cleaner way for you to write your application BDD specs.
-Having your specs written this way, you can use them as documentation, since it's plain english and also will help you if you're willing to migrate a system from PHP to some other platform supported by Cucumber.
+PeHPino aims to provide a descriptive BDD approach being testing
+framework agnostic, that is you could write your tests using your
+favorite framework. Having your specs written this way, it can be used
+as documentation, since it's plain english and also will help you if
+you're willing to migrate a system from PHP to some other platform
+supported by Cucumber.
 
+PeHPino is currently on alpha phase, which means that it is not
+complete and bugs will raise at unexpected (or not) places. The syntax
+is not written on stone either, so it is likely that is going to
+change. Please take this into account if you would like to implement
+this on production environments.
 
-Defining Steps:
-======== =====
+The current version comes with a very simple example feature, which
+has been copied from an existing application using Cucumber, so its
+syntax is valid.
 
-PeHPino will search for all files located under the steps/ directory and will load the steps defined there.
+Defining Steps
+==============
+
+PHPino will search for all files located under the steps/ directory
+and will load the steps defined there. 
+
+Example
+=======
+
 Supose you have the feature:
-  Given I am logged in
+Given I am logged in
 
-Assuming you're using PHPUnit, the way you should define this step is something like:
+Assuming you're using PHPUnit, the way you should define this step is
+something like:
+
 <?php
 
-  Given("I am logged in") {
+Given("I am logged in") {
     $user = User::findById(1);
     $user->login();
     $this->assertTrue($user->isLoggedIn());
-  }
+}
 
 ?>
 
-Note that the php tags are not required, because this is a pseudo-valid PHP code. The step name is not exactly valid, but the body of the step definition must be valid PHP code and here is where you have to specify your test code.
+Note that the php tags are not required, because this is a
+pseudo-valid PHP code. The step name is not exactly valid, but the
+body of the step definition must be valid PHP code and here is where
+you have to specify your test code.
 
-This is a work in progress, in a very early stage, but it looks promising, stay tuned if you're interested.
-
+This is a work in progress, in a very early stage, but it looks
+promising, stay tuned if you're interested.
 
 Leonardo Mateo (a.k.a. kandalf)
 
-[1]http://cukes.info
+[1] http://cukes.info
+[*] I also must confess that PHP syntax sucks, specially for this kind
+of descriptive things.
