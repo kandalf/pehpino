@@ -1,5 +1,8 @@
 <?php
 
+define('S_SUCCESS', 0);
+define('S_PENDING', 1);
+
 	class StepExecutor
 	{
 		const STATE_FEATURE 	= 'Feature';
@@ -90,17 +93,19 @@
       $functionName = $this->_parseFunctionName(trim($step));
       
       if (array_key_exists($functionName, $this->_steps[$this->_state]))
-      {
-        //find parameters to eval the function call with them
-        echo "Execute $functionName: \n" . $this->_steps[$this->_state][$functionName];
-      }
+	{
+	  //find parameters to eval the function call with them
+	  //Output::success('Executing ' . $functionName);
+	  //Output::pending($this->_steps[$this->_state][$functionName]);
+	  return S_SUCCESS;
+	}
       else
-      {
-        echo "\nUndefined step $functionName\n";
-        print_r($this->_steps[$this->_state]);
-        exit;
-        //throw new UndefinedStepException($functionName);
-      }
+	{
+	  //Output::error('Undefined step ' . $functionName);
+	  //exit;
+	  //throw new UndefinedStepException($functionName);
+	  return S_PENDING;
+	}
     }
     
     protected function _setState($state){
@@ -109,28 +114,30 @@
         eval(implode($this->_steps[$this->_state], " "));
     }
 
-		public function getInstance()
-		{
-			if (is_null(self::$_instance))
-				self::$_instance = new StepExecutor();	
-			return self::$_instance;
-		}
+    public static function getInstance()
+    {
+      if (is_null(self::$_instance))
+	self::$_instance = new StepExecutor();  
+      return self::$_instance;
+    }
 
     public function getSteps()
     {
       return $this->_steps;
     }
-		public function call($state, $step)
-		{
-		  switch($state)
-      {
-        case self::STATE_GIVEN:
-        case self::STATE_WHEN:
-        case self::STATE_THEN:
-          $this->_setState($state);
-        default:
-          $this->_execute($step);
-      }
-		}
+
+    public function call($state, $step)
+    {
+        switch($state)
+        {
+            case self::STATE_GIVEN:
+            case self::STATE_WHEN:
+            case self::STATE_THEN:
+                $this->_setState($state);
+            default:
+                return $this->_execute($step);
+        }
+    }
+
 	}
 ?>
