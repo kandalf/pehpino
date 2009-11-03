@@ -6,12 +6,11 @@
     private $_file;
     private $_featurePattern;
 
+    const STEP_PATTERN = "/^\s+(Given|When|Then|And)\s+(.+)$/";
+
     public function __construct($featureFile)
     {
       $this->_file = fopen($featureFile, "r");
-      $this->_featurePattern = "/^\s+((Given|And)|(When|And)|(Then|And))(.+)$/";
-
-      $this->parse();
     }
 
     public function __destruct()
@@ -23,17 +22,32 @@
     {
       $executor = StepExecutor::getInstance();
       $matches = array();
+
       while($line = fgets($this->_file))
       {
-        preg_match($this->_featurePattern, $line, $matches);
-        if(count($matches) > 0)
-        {
-          $sentenceParts = split(" ", trim($matches[1]));
-          $executor->call($sentenceParts[0], $matches[count($matches) - 1]);
+	$line = str_replace("\n", '', $line);
 
+	if(preg_match(self::STEP_PATTERN, $line, $matches) == 1)
+	{
+          list($full, $step, $args) = $matches;
+
+	  try {
+	    $result = $executor->call($step, $args);
+
+	    if( S_SUCCESS === $result ) {
+	      Output::success($line);
+	    } elseif( S_PENDING === $result ) {
+	      Output::pending($line);
+	    }
+	  } catch(Exception $ex) {
+	    Output::error($ex);
+	  }
         }
+	else
+	{
+	  Output::println($line);
+	}
       }
     }
   }
-
 ?>
