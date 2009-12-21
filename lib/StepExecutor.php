@@ -5,11 +5,11 @@ define('S_PENDING', 1);
 
 	class StepExecutor
 	{
-		const STATE_FEATURE 	= 'Feature';
-		const STATE_SCENARIO 	= 'Scenario';
-		const STATE_GIVEN 		= 'Given';
-		const STATE_WHEN 		  = 'When';
-		const STATE_THEN 		  = 'Then';
+		const STATE_FEATURE		= 'Feature';
+		const STATE_SCENARIO	= 'Scenario';
+		const STATE_GIVEN		= 'Given';
+		const STATE_WHEN		= 'When';
+		const STATE_THEN		= 'Then';
 
     const STEPS_DIR       = 'steps';
 
@@ -43,6 +43,7 @@ define('S_PENDING', 1);
             $this->_parseFile($file);
         }
         closedir($dHnd);
+
       } else {
         throw new Exception("Invalid Steps directory");
       }
@@ -76,6 +77,7 @@ define('S_PENDING', 1);
         $functionName = str_replace('"', "", $this->_parseFunctionName($step));
         $this->_steps[$state][$functionName] = "function " . $functionName . "(" . trim(implode($matches[0], ",")) . ")" . $functionBodies[$idx];
       }
+
     }
 
     private function _parseFunctionName($step)
@@ -88,20 +90,29 @@ define('S_PENDING', 1);
     {
       //isolate parameters and function name parsing from step
       $matches = array();
-      $parameters = "((\s\\$([a-z]|[A-Z])+\s*))";
-      preg_match_all("/$parameters/", trim($step), $matches);
-      $functionName = $this->_parseFunctionName(trim($step));
+      $parameters = "((\"(([a-z]|[A-Z])+\s*)+\"))";
+	  $step = trim($step);
+      preg_match_all("/$parameters/", $step, $matches);
+	  $functionName = str_replace(" ", "_", preg_replace("/$parameters/", "", $step));
+     
+      print_r("Function: $functionName\n");
+	  print_r($matches);
+	  print_r("------\n");
       
       if (array_key_exists($functionName, $this->_steps[$this->_state]))
 	{
 	  //find parameters to eval the function call with them
-	  //Output::success('Executing ' . $functionName);
+	  //Output::success('Executing ' . $functionName . "(" . implode($matches[0], ",") . ")");
 	  //Output::pending($this->_steps[$this->_state][$functionName]);
+	
+	  $evalString = $functionName . "(" . implode($matches[0], ",") . ");";
+	  print_r($this->_steps[$this->_state]);
+	  eval($evalString);
 	  return S_SUCCESS;
 	}
       else
 	{
-	  //Output::error('Undefined step ' . $functionName);
+	  //Output::error('Undefined step ' . print_r($this->_steps[$this->_state], true));
 	  //exit;
 	  //throw new UndefinedStepException($functionName);
 	  return S_PENDING;

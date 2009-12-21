@@ -6,7 +6,7 @@ Feature: Manage Albums
 
   Scenario: Create album
     Given I am logged in
-    When I go to the albums page
+    When I go to the "albums" page
     And I follow "New Album"
     And I fill in "Name" with "My Album"
     And I fill in "Description" with "Picture Album"
