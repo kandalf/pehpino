@@ -95,10 +95,11 @@ define('S_PENDING', 1);
       preg_match_all("/$parameters/", $step, $matches);
 	  $functionName = str_replace(" ", "_", preg_replace("/$parameters/", "", $step));
      
-      print_r("Function: $functionName\n");
+/*  
+	  print_r("Function: $functionName\n");
 	  print_r($matches);
 	  print_r("------\n");
-      
+  */    
       if (array_key_exists($functionName, $this->_steps[$this->_state]))
 	{
 	  //find parameters to eval the function call with them
@@ -106,7 +107,7 @@ define('S_PENDING', 1);
 	  //Output::pending($this->_steps[$this->_state][$functionName]);
 	
 	  $evalString = $functionName . "(" . implode($matches[0], ",") . ");";
-	  print_r($this->_steps[$this->_state]);
+	  //print_r($this->_steps[$this->_state]);
 	  eval($evalString);
 	  return S_SUCCESS;
 	}
